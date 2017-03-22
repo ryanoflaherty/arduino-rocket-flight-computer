@@ -1,6 +1,8 @@
 ## Arduino Model Rocket Flight Computer
 This is a simple collection of programs written to collect data from a model rocket flight. The inspiration for this project came from [ALTDuino](http://www.altduino.de/index.php?all).
 
+__Note:__ I only included the code the I wrote here. You will need to install the appropriate libraries to get this to work (e.g. Adafruit Sensor Libraries, SPIEEP, etc).
+
 ### Software
 There are three main programs needed to interact with the arduino:
 * [Rocket Runtime](https://github.com/ryanoflaherty/arduino-rocket-flight-computer/tree/master/Rocket_Runtime)

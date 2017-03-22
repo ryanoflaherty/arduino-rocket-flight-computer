@@ -49,7 +49,7 @@ unsigned long time; // Relative time (after program started)
 char blink;
 
 /* Assign a unique ID to the sensors */
-Adafruit_BMP085_Unified       bmp   = Adafruit_BMP085_Unified(18001);
+Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(18001);
 
 /* Update this with the correct SLP for accurate altitude measurements */
 float seaLevelPressure = SENSORS_PRESSURE_SEALEVELHPA;
@@ -72,7 +72,7 @@ void setup() {
   blink = 0;
   Serial.begin(115200);
   eep.begin_spi(EEPROM_CSPIN);  // Enable SPI
-  //initSensors(); // Initialize the sensors
+  initSensors(); // Initialize the sensors
   Serial.println("Begin test...");
 
   /* Write the columns of .csv into Storage */
@@ -90,7 +90,7 @@ void setup() {
 void loop() {
   /* Initialize Runtime Variables */
   time = millis();  // Get the current time since the program started
-  //sensors_event_t bmp_event;  // New sensor event for BMP180
+  sensors_event_t bmp_event;  // New sensor event for BMP180
   char buf[BUF_SIZE] = {}; // Byte/Char buffer that is written to EEPROM
   char temp_buf[5] = {};  // String for temperature reading
   char pres_buf[6] = {};  // String for pressure reading
@@ -118,30 +118,30 @@ void loop() {
   
   /* Calculate the altitude using the barometric pressure sensor */
   
-  //bmp.getEvent(&bmp_event);
-  //if (bmp_event.pressure)
-  //{
+  bmp.getEvent(&bmp_event);
+  if (bmp_event.pressure)
+  {
     /* Get ambient temperature in C, load into buffer */
-    //float temperature;
-    //bmp.getTemperature(&temperature);
-    //dtostrf(temperature, 5, 2, temp_buf);
-    //strncat(buf, temp_buf, 5);
-    //strcat(buf, ", ");
+    float temperature;
+    bmp.getTemperature(&temperature);
+    dtostrf(temperature, 5, 2, temp_buf);
+    strncat(buf, temp_buf, 5);
+    strcat(buf, ", ");
 
     /* Get atmospheric pressure in Pa, load into buffer */
-    //float pressure;
-    //bmp.getPressure(&pressure);
-    //dtostrf(pressure, 6, 0, pres_buf);
-    //strncat(buf, pres_buf, 6);
-    //strcat(buf, ", ");
+    float pressure;
+    bmp.getPressure(&pressure);
+    dtostrf(pressure, 6, 0, pres_buf);
+    strncat(buf, pres_buf, 6);
+    strcat(buf, ", ");
     
     /* Convert atmospheric pressure, SLP and temp to altitude, write to buffer */
-    //float altitude;
-    //altitude = bmp.pressureToAltitude(seaLevelPressure, bmp_event.pressure, temperature);
-    //dtostrf(altitude, 5, 2, alt_buf);
-    //strncat(buf, alt_buf, 6);
-    //strcat(buf, ", ");
-  //}
+    float altitude;
+    altitude = bmp.pressureToAltitude(seaLevelPressure, bmp_event.pressure, temperature);
+    dtostrf(altitude, 5, 2, alt_buf);
+    strncat(buf, alt_buf, 6);
+    strcat(buf, ", ");
+  }
 
   /* Add a relative time stamp */
   strncat(buf, time_buf, 6);
@@ -149,7 +149,8 @@ void loop() {
   
   Serial.print(buf);
   if (!eep.writen(addr, buf, BUF_SIZE)) {
-    Serial.println("Error writing  to address=0x0100");
+    Serial.print("Error writing  to address=");
+    Serial.println(addr);
   } else {
     addr += uint32_t(BUF_SIZE); // Increment the address for next write
     Serial.print(" @ 0x");

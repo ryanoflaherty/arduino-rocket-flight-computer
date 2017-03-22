@@ -1,3 +1,9 @@
+/* Copyright (C) 2017 by Ryan O'Flaherty
+ * Distributed under the terms of the GNU Lesser General Public License
+ * A copy of this license may be obtained at:
+ * http://www.gnu.org/copyleft/lesser.html
+ */
+
 #include <SPIEEP.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -5,11 +11,11 @@
 #include <Adafruit_BMP085_U.h>
 #include <string.h>
 
-/*  
-*******************************************************
+/********************************************************
 EEPROM Encoding
 
 Formatted for .csv - line ending in "" (^M) denotes end of row
+Copy from serial terminal to csv - see example in rocket.csv
 
 Line 1: Column names (setup())
 Byte 0-4: "Temp,"
@@ -28,9 +34,7 @@ Byte 21-22: ", "
 Byte 23-28: Time (ms)
 Byte 29: ","
 
-
-*******************************************************
-*/
+********************************************************/
 
 /* Initialize SPI Connection to EEPROM */
 SPIEEP eep(16, 128, 65536); // Microchip 25LC512

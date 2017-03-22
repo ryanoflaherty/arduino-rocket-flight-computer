@@ -1,3 +1,9 @@
+/* Copyright (C) 2017 by Ryan O'Flaherty
+ * Distributed under the terms of the GNU Lesser General Public License
+ * A copy of this license may be obtained at:
+ * http://www.gnu.org/copyleft/lesser.html
+ */
+
 #include <SPIEEP.h>
 #include <SPI.h>
 
@@ -16,11 +22,10 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
   delay(100);
 
   if (addr >  MAX_ADDR){
-    digitalWrite(13, LOW);   // turn the LED on (HIGH is the voltage level)
+    digitalWrite(13, LOW);   // turn the LED off after read is complete
     while(1);
   }
   
@@ -28,17 +33,16 @@ void loop() {
   int i;
   
   if (!eep.readn(addr, buf, BUF_SIZE)) {
-    Serial.println("Error reading 500 bytes from address=0x1F0E");
+    Serial.print("Error reading from address=");
+    Serial.println(addr);
   } else {
     for (i=0; i < BUF_SIZE; i++) {
       Serial.write(buf[i]);
     }
     addr += uint32_t(BUF_SIZE);
     Serial.println("");
-    /*
-    Serial.print(" @ 0x");
-    Serial.print(addr, HEX);
-    Serial.println("");
-    */
+    // Serial.print(" @ 0x");
+    // Serial.print(addr, HEX);
+    // Serial.println("");
   }
 }
